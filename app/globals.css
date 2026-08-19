@@ -1,26 +1,278 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --color-navy: #0d183f;
+  --color-navy-deep: #060c22;
+  --color-navy-ink: #03060f;
+  --color-navy-soft: #1a2a5c;
+  --color-navy-line: #223468;
+
+  --color-gold: #c5a25c;
+  --color-gold-light: #e3cb94;
+  --color-gold-hot: #f4e3bc;
+  --color-gold-deep: #8f7133;
+
+  --color-paper: #f8f5ee;
+  --color-paper-warm: #f0e9da;
+  --color-paper-line: #e2d9c5;
+
+  --color-ink: #131a2c;
+  --color-ink-soft: #4a5266;
+
+  --color-cairns: #c5a25c;
+  --color-innisfail: #3f7a57;
+  --color-townsville: #b4573c;
+  --color-ipswich: #2f6c7a;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swing: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-navy-ink);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01";
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-navy-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------------------------------------------------------------
+   Type devices
+   ------------------------------------------------------------------------ */
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+@utility display-balance {
+  text-wrap: balance;
+}
+
+/* Brushed gold. One or two words per screen, never more. Uses text-fill rather
+   than colour so an inline colour can still drive anything else on the node. */
+@utility foil {
+  background-image: linear-gradient(
+    104deg,
+    #8f7133 0%,
+    #c5a25c 18%,
+    #f4e3bc 34%,
+    #c5a25c 52%,
+    #8f7133 72%,
+    #d8bb7d 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* The gradient is only painted inside the box, so a descender hanging below
+     a tight line box would come out transparent. The padding extends the paint
+     area and the matching negative margin keeps the layout exactly as it was. */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+/* The same treatment for light surfaces. Every stop is kept dark enough to
+   clear 4.5:1 against the paper backgrounds, because the pale stops in `foil`
+   all but vanish on cream. */
+@utility foil-deep {
+  background-image: linear-gradient(
+    104deg,
+    #4a3612 0%,
+    #6f5624 18%,
+    #7d6229 34%,
+    #5e4a1d 52%,
+    #6f5624 72%,
+    #4a3612 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+/* Outlined display type. The stroke picks up whatever colour is set on the
+   element, so a club accent can be passed in inline. */
+@utility hollow {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px currentColor;
+  opacity: 0.45;
+}
+
+@utility hollow-thick {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px currentColor;
+  opacity: 0.55;
+}
+
+/* ---------------------------------------------------------------------------
+   Surface devices
+   ------------------------------------------------------------------------ */
+
+@utility grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+@utility fade-x {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   Looping motion
+   ------------------------------------------------------------------------ */
+
+@keyframes marquee-run {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes pin-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@utility marquee-track {
+  animation: marquee-run 46s linear infinite;
+  will-change: transform;
+}
+
+@utility pin-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pin-pulse 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* ---------------------------------------------------------------------------
+   Reveal on scroll.
+
+   The `js-reveal` class is added to <html> by a small inline script before
+   first paint, so there is no flash. Without JavaScript, or with reduced
+   motion, the class is never added and everything renders in place.
+   ------------------------------------------------------------------------ */
+
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition:
+    opacity 0.85s var(--ease-out-soft),
+    transform 0.85s var(--ease-out-soft);
+}
+
+.js-reveal .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.js-reveal .reveal-wipe {
+  opacity: 0;
+  clip-path: inset(-0.35em -0.25em 100% -0.25em);
+  transition:
+    opacity 0.6s var(--ease-out-soft),
+    clip-path 1.05s var(--ease-out-soft);
+}
+
+.js-reveal .reveal-wipe.is-in {
+  opacity: 1;
+  /* Negative insets so descenders are never clipped once the wipe lands. */
+  clip-path: inset(-0.35em -0.25em -0.35em -0.25em);
+}
+
+.js-reveal .reveal-rule {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.1s var(--ease-swing);
+}
+
+.js-reveal .reveal-rule.is-in {
+  transform: scaleX(1);
+}
+
+.js-reveal .coastline {
+  stroke-dasharray: 3400;
+  stroke-dashoffset: 3400;
+  transition: stroke-dashoffset 2.6s var(--ease-out-soft);
+}
+
+.js-reveal .coastline.is-in {
+  stroke-dashoffset: 0;
+}
+
+/* Staggering, applied by the observer so items in a row arrive in sequence. */
+.js-reveal .reveal[data-delay="1"],
+.js-reveal .reveal-wipe[data-delay="1"] {
+  transition-delay: 90ms;
+}
+
+.js-reveal .reveal[data-delay="2"],
+.js-reveal .reveal-wipe[data-delay="2"] {
+  transition-delay: 180ms;
+}
+
+.js-reveal .reveal[data-delay="3"],
+.js-reveal .reveal-wipe[data-delay="3"] {
+  transition-delay: 270ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee-track,
+  .pin-ping {
+    animation: none !important;
+  }
+
+  .js-reveal .reveal,
+  .js-reveal .reveal-wipe,
+  .js-reveal .reveal-rule,
+  .js-reveal .coastline {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }
