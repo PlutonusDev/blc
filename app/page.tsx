@@ -88,7 +88,6 @@ export default function Home() {
       <TheIdea />
       <TheClubs />
       <TheMap />
-      <Marquee items={["Eat", "Drink", "Play", "Celebrate", "Bring the kids", "Back the footy"]} tone="line" />
       <Inside />
       <CommunityBand />
       <MembershipLadder />

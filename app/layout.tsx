@@ -21,8 +21,17 @@ const inter = Inter({
 
 // Arms the reveal styles before first paint, so nothing flashes in and then
 // hides. If JavaScript is off, or the reader prefers reduced motion, the class
-// is never added and the page renders in its finished state.
-const armReveal = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("js-reveal")}}catch(e){}`;
+// is never added and the page renders in its finished state. The timeout is a
+// dead man's switch: if RevealObserver never mounts, the styles are dropped and
+// everything shows rather than staying hidden.
+const armReveal = [
+  "try{",
+  'var r=document.documentElement;',
+  'if(matchMedia("(prefers-reduced-motion: reduce)").matches)throw 0;',
+  'r.classList.add("js-reveal");',
+  'setTimeout(function(){if(!r.hasAttribute("data-reveal-ready"))r.classList.remove("js-reveal")},4000);',
+  "}catch(e){}",
+].join("");
 
 const defaultTitle = `${siteName} | Cairns, Innisfail, Townsville and Ipswich`;
 

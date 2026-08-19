@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Marquee } from "@/components/marquee";
 import { BreadcrumbSchema, ClubSchema } from "@/components/structured-data";
 import {
   Arrow,
@@ -231,8 +230,6 @@ export default async function ClubPage({ params }: Params) {
           </div>
         </Container>
       </section>
-
-      <Marquee items={club.venues.map((venue) => venue.name)} />
 
       {/* ---------------------------------------------------------- venues */}
       <section className="bg-paper-warm py-28 sm:py-32">
